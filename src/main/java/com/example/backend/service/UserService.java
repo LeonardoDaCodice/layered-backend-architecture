@@ -17,9 +17,6 @@ public class UserService {
 
     public UserResponseDTO createUser(UserRequestDTO request) {
 
-        if (request.getAge() < 18) {
-            throw new IllegalArgumentException("User must be at least 18 years old");
-        }
 
         User user = new User(null, request.getName(), request.getAge());
         User saved = userRepository.save(user);
