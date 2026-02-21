@@ -6,6 +6,7 @@ import com.example.backend.exception.UserNotFoundException;
 import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,8 +19,11 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    @Transactional(readOnly = true)
     public UserResponseDTO getUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id));
+
         return new UserResponseDTO(
                 user.getId(),
                 user.getName(),
@@ -27,8 +31,7 @@ public class UserService {
         );
     }
 
-
-
+    @Transactional
     public UserResponseDTO createUser(UserRequestDTO request) {
 
         User user = new User(request.getName(), request.getAge());
@@ -41,20 +44,15 @@ public class UserService {
         );
     }
 
-
-
-
-
-
+    @Transactional
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(id));
+
         userRepository.delete(user);
     }
 
-
-
-
+    @Transactional
     public UserResponseDTO updateUser(Long id, UserRequestDTO request) {
 
         User user = userRepository.findById(id)
@@ -72,11 +70,7 @@ public class UserService {
         );
     }
 
-
-
-
-
-
+    @Transactional(readOnly = true)
     public List<UserResponseDTO> searchByName(String name) {
 
         return userRepository.findByNameContainingIgnoreCase(name)
@@ -89,13 +83,7 @@ public class UserService {
                 .toList();
     }
 
-
-
-
-
-
-
-
+    @Transactional(readOnly = true)
     public List<UserResponseDTO> getAllUsers() {
         return userRepository.findAll()
                 .stream()
@@ -106,5 +94,4 @@ public class UserService {
                 ))
                 .toList();
     }
-
 }
