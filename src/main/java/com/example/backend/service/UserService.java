@@ -2,6 +2,7 @@ package com.example.backend.service;
 
 import com.example.backend.dto.UserRequestDTO;
 import com.example.backend.dto.UserResponseDTO;
+import com.example.backend.exception.UserNotFoundException;
 import com.example.backend.model.User;
 import com.example.backend.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -29,9 +30,7 @@ public class UserService {
     }
 
     public UserResponseDTO getUserById(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
         return new UserResponseDTO(
                 user.getId(),
                 user.getName(),
